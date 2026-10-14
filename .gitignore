@@ -1,0 +1,10 @@
+/.idea/
+/.vscode/
+*.log
+.DS_Store
+
+/.dev/composer.lock
+/.dev/config/**
+/.dev/var/*
+/.dev/var/*/**
+/.dev/vendor/

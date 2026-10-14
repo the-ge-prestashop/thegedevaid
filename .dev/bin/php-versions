@@ -1,0 +1,136 @@
+#!/usr/bin/env php
+<?php
+
+const KNOWN_PHP_VERSIONS = [
+    '5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6',
+    '7.0', '7.1', '7.2', '7.3', '7.4',
+    '8.0', '8.1', '8.2', '8.3', '8.4', '8.5',
+];
+
+function versionValue(string $majorMinor): int
+{
+    [$major, $minor] = explode('.', $majorMinor);
+
+    return ((int) $major) * 1000 + (int) $minor;
+}
+
+/**
+ * Parses one atomic constraint token (optional operator + major.minor or major.*)
+ * and returns an inclusive [lower, upper] bound on the version-value scale.
+ */
+function parseToken(string $token, string $originalConstraint): array
+{
+    if (!preg_match('/^(\^|~|>=|<=|>|<)?(\d+)\.(\d+|\*)$/', $token, $m)) {
+        throw new RuntimeException("Expected major.minor version, got '{$token}' in constraint '{$originalConstraint}'");
+    }
+
+    $operator = $m[1];
+    $major = (int) $m[2];
+    $minorRaw = $m[3];
+
+    if ($minorRaw === '*') {
+        if ($operator !== '') {
+            throw new RuntimeException(
+                "Unsupported operator with wildcard in '{$token}' in constraint '{$originalConstraint}'"
+            );
+        }
+
+        return [$major * 1000, $major * 1000 + 999];
+    }
+
+    $majorMinor = $major . '.' . $minorRaw;
+    if (!in_array($majorMinor, KNOWN_PHP_VERSIONS, true)) {
+        throw new RuntimeException(
+            "Unknown PHP version '{$majorMinor}' referenced in constraint '{$originalConstraint}'"
+        );
+    }
+
+    $value = $major * 1000 + (int) $minorRaw;
+
+    switch ($operator) {
+        case '':
+            return [$value, $value];
+        case '^':
+        case '~':
+            return [$value, $major * 1000 + 999];
+        case '>=':
+            return [$value, PHP_INT_MAX];
+        case '<=':
+            return [0, $value];
+        case '>':
+            return [$value + 1, PHP_INT_MAX];
+        case '<':
+            return [0, $value - 1];
+        default:
+            throw new RuntimeException("Unsupported operator '{$operator}' in constraint '{$originalConstraint}'");
+    }
+}
+
+/** Parses one AND-clause (a hyphen range, or space-separated tokens) into an inclusive [lower, upper] bound. */
+function parseClause(string $clause, string $originalConstraint): array
+{
+    $clause = trim($clause);
+
+    if (preg_match('/^(\S+)\s*-\s*(\S+)$/', $clause, $m)) {
+        $lower = parseToken($m[1], $originalConstraint);
+        $upper = parseToken($m[2], $originalConstraint);
+
+        return [$lower[0], $upper[1]];
+    }
+
+    $lower = 0;
+    $upper = PHP_INT_MAX;
+
+    foreach (preg_split('/\s+/', $clause) as $token) {
+        [$tokenLower, $tokenUpper] = parseToken($token, $originalConstraint);
+        $lower = max($lower, $tokenLower);
+        $upper = min($upper, $tokenUpper);
+    }
+
+    if ($upper === PHP_INT_MAX) {
+        $major = intdiv($lower, 1000);
+        $upper = $major * 1000 + 999;
+    }
+
+    return [$lower, $upper];
+}
+
+function resolveVersions(string $constraint): array
+{
+    $bounds = [];
+    foreach (preg_split('/\s*\|\|?\s*/', trim($constraint)) as $clause) {
+        $bounds[] = parseClause($clause, $constraint);
+    }
+
+    $matched = [];
+    foreach (KNOWN_PHP_VERSIONS as $version) {
+        $value = versionValue($version);
+        foreach ($bounds as [$lower, $upper]) {
+            if ($value >= $lower && $value <= $upper) {
+                $matched[] = $version;
+                break;
+            }
+        }
+    }
+
+    return $matched;
+}
+
+$composerPath = __DIR__ . '/../../composer.json';
+
+$composerJson = file_get_contents($composerPath);
+if ($composerJson === false) {
+    throw new RuntimeException("Unable to read composer.json at {$composerPath}");
+}
+
+$composerData = json_decode($composerJson, true);
+if (json_last_error() !== JSON_ERROR_NONE) {
+    throw new RuntimeException('Invalid JSON in composer.json: ' . json_last_error_msg());
+}
+
+$phpConstraint = $composerData['require']['php'] ?? null;
+if ($phpConstraint === null) {
+    throw new RuntimeException('No "php" entry found in "require" section of composer.json');
+}
+
+echo implode(' ', resolveVersions($phpConstraint));

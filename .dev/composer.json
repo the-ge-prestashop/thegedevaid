@@ -1,0 +1,71 @@
+{
+    "name": "the-ge/thegedevaid",
+    "description": "Developer aid toolbox for PrestaShop.",
+    "type": "prestashop-module",
+    "license": "AFL-3.0",
+    "homepage": "https://github.com/the-ge-prestashop/thegedevaid",
+    "authors": [
+        {
+            "name": "Gabriel Tenita",
+            "email": "the.ge.1447624801@tenita.eu",
+            "homepage": "https://www.tenita.eu"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/the-ge-prestashop/thegedevaid/issues"
+    },
+    "require": {
+        "php": "^8.1"
+    },
+    "extra": {
+        "prestashop": {
+            "min_version": "9.0.0",
+            "max_version": "9.99.99"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "TheGe\\PrestaShopModule\\DevAid\\": "src/"
+        },
+        "classmap": [
+            "thegedevaid.php"
+        ],
+        "exclude-from-classmap": []
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TheGe\\PrestaShopModule\\DevAid\\Tests\\": ".dev/tests/",
+            "TheGe\\DevAid\\": ".dev/src/"
+        }
+    },
+    "require-dev": {
+        "nunomaduro/mock-final-classes": "^1.2",
+        "pestphp/pest": "^5.1",
+        "php-parallel-lint/php-console-highlighter": "^1.0",
+        "php-parallel-lint/php-parallel-lint": "^1.4",
+        "phpcompatibility/php-compatibility": "^10.0.0@dev",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpunit/phpunit": "^13",
+        "rector/rector": "^2.5",
+        "shipmonk/dead-code-detector": "^1.3",
+        "slevomat/coding-standard": "^8.26",
+        "spaze/phpstan-disallowed-calls": "^4.9",
+        "squizlabs/php_codesniffer": "^4.0",
+        "symfony/yaml": "^8.0",
+        "the-ge/phpcsfixer-config": "^1.0",
+        "tomasvotruba/type-coverage": "^2.2",
+        "symplify/config-transformer": "^12.5"
+    },
+    "config": {
+        "vendor-dir": ".dev/vendor",
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "pestphp/pest-plugin": true
+        },
+        "preferred-install": "dist",
+        "prepend-autoloader": false
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

@@ -1,0 +1,39 @@
+{
+    "name": "the-ge/thegedevaid",
+    "description": "Developer aid toolbox for PrestaShop.",
+    "type": "prestashop-module",
+    "license": "AFL-3.0",
+    "homepage": "https://github.com/the-ge-prestashop/thegedevaid",
+    "authors": [
+        {
+            "name": "Gabriel Tenita",
+            "email": "the.ge.1447624801@tenita.eu",
+            "homepage": "https://www.tenita.eu"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/the-ge-prestashop/thegedevaid/issues"
+    },
+    "require": {
+        "php": "^8.2"
+    },
+    "extra": {
+        "prestashop": {
+            "min_version": "9.0.0",
+            "max_version": "9.99.99"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "TheGe\\PrestaShopModule\\DevAid\\": "src/"
+        },
+        "classmap": [
+            "thegedevaid.php"
+        ],
+        "exclude-from-classmap": []
+    },
+    "config": {
+        "preferred-install": "dist",
+        "prepend-autoloader": false
+    }
+}

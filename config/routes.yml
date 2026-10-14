@@ -1,0 +1,9 @@
+thegedevaid_configuration_form:
+  path: /thegedevaid/configuration
+  methods: [GET, POST]
+  defaults:
+    _controller: 'TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationController::index'
+    #_disable_module_prefix: true
+    # Needed to work with tab system
+    #_legacy_controller: AdminTheGeDevAid
+    #_legacy_link: AdminTheGeDevAid

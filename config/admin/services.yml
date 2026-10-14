@@ -1,0 +1,68 @@
+parameters:
+  thegedevaid.module_dir: '%kernel.project_dir%/modules/thegedevaid'
+
+services:
+  _defaults:
+    autowire: false
+    autoconfigure: false
+    public: true
+
+  # Wraps the legacy Context so no namespaced class ever calls Context::getContext() directly.
+  thegedevaid.legacy_context:
+    alias: prestashop.adapter.legacy.context
+
+  # --- Configuration
+
+  TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationController:
+    autowire: true
+    autoconfigure: true
+    tags:
+      - { name: controller.service_arguments }
+
+  TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationFormType:
+    parent: 'form.type.translatable.aware'
+    public: true
+    tags:
+      - { name: form.type }
+
+  TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationDataManager:
+    arguments: ['@prestashop.adapter.legacy.configuration']
+
+  TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationDataProvider:
+    arguments:
+      - '@TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationDataManager'
+
+  thegedevaid.configuration.form_data_handler:
+    class: 'PrestaShop\PrestaShop\Core\Form\Handler'
+    arguments:
+      - '@form.factory'
+      - '@prestashop.core.hook.dispatcher'
+      - '@TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationDataProvider'
+      - 'TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationFormType'
+      - 'TheGeDevAidConfiguration'
+
+  # --- Configuration Grid
+
+#  TheGe\PrestaShopModule\DevAid\Configuration\GridDefinitionFactory:
+#    parent: 'prestashop.core.grid.definition.factory.abstract_grid_definition'
+#    public: true
+#
+#  TheGe\PrestaShopModule\DevAid\Configuration\GridFactory:
+#    public: true
+#    arguments:
+#      - '@TheGe\PrestaShopModule\DevAid\Configuration\GridDefinitionFactory'
+#      - '@thegedevaid.grid.data_provider.fixes'
+#      - '@prestashop.core.grid.filter.form_factory'
+#      - '@prestashop.core.hook.dispatcher'
+#
+#  TheGe\PrestaShopModule\DevAid\Configuration\GridQueryBuilder:
+#    parent: 'prestashop.core.grid.abstract_query_builder'
+#    autowire: true
+#
+#  thegedevaid.grid.data_provider.fixes:
+#    class: '%prestashop.core.grid.data.factory.doctrine_grid_data_factory%'
+#    arguments:
+#      - '@TheGe\PrestaShopModule\DevAid\Configuration\GridQueryBuilder'
+#      - '@prestashop.core.hook.dispatcher'
+#      - '@prestashop.core.grid.query.doctrine_query_parser'
+#      - !php/const TheGe\PrestaShopModule\DevAid\Configuration\GridDefinitionFactory::GRID_ID

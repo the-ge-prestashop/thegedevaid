@@ -1,0 +1,39 @@
+#!/bin/bash
+
+
+set -eEu
+BINPATH="$( realpath "$( dirname "${BASH_SOURCE[0]}" )" )"
+DEVPATH="$( dirname "$BINPATH" )"
+ROOTPATH="$( dirname "$DEVPATH" )"
+CFGPATH="$DEVPATH/config"
+VNDPATH="$DEVPATH/vendor"
+VNDBIN="$VNDPATH/bin"
+set -a
+. "$DEVPATH"/.env # .env must exist and it must contain $URIS (space-separated paths relative to $ROOTPATH)
+[ -f "$DEVPATH"/.env.local ] && . "$DEVPATH"/.env.local
+set +a
+PHP_VERSIONS=( $( "$BINPATH/php-versions" ) )
+URIS=( $URIS )
+declare -r BINPATH DEVPATH ROOTPATH CFGPATH VNDPATH VNDBIN PHP_VERSIONS
+. .dev-default-actions
+
+
+main()
+{
+    [[ $# -lt 1 ]] && { help-default; return 1; }
+    [[ "$1" =~ (\-\-)?help ]] && { help-default; return 0; }
+
+    # return code 12: the command executed successfully, but had no work to do
+    if dev-default-actions "$@" || [[ $? != 12 ]]; then
+        exit 0
+    fi
+
+    local action="$1"
+    shift 1
+
+    case "$action" in
+       *) printf '\n🚨 Unknown dev command "%s %s". Check %s for available commands.\n\n' "${0##*/}" "$action $*" "$0"
+    esac
+}
+
+main "$@"
