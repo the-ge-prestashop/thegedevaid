@@ -49,6 +49,7 @@
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpcompatibility/php-compatibility": "^10.0.0@dev",
         "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
         "phpunit/phpunit": "^13",
         "rector/rector": "^2.5",
