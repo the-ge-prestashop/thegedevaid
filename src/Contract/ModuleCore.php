@@ -35,8 +35,14 @@ interface ModuleCore
     public function context(): \Context;
 
     /**
-     * @param string        $serviceId Service ID in the Symfony container
-     * @param ?class-string $className Service class constraint
+     * @template T of object
+     * @param string           $serviceId Service ID in the Symfony container (FQN or dotted string)
+     * @param ?class-string<T> $className Optional service class constraint
+     *
+     * @return ($className is null ? object : T)
+     *
+     * @throws \TheGe\PrestaShopModule\DevAid\Exception\ContainerUnavailableException When no container is available
+     * @throws \LogicException When the service is not an instance of $className
      */
     public function service(string $serviceId, ?string $className = null): object;
 }

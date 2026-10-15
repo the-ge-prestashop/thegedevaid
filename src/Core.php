@@ -26,6 +26,7 @@ use PrestaShop\PrestaShop\Adapter\Configuration;
 use PrestaShopBundle\Service\Routing\Router;
 use TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationSpec;
 use TheGe\PrestaShopModule\DevAid\Contract\ModuleCore;
+use TheGe\PrestaShopModule\DevAid\Exception\ContainerUnavailableException;
 use TheGe\PrestaShopModule\DevAid\Exception\InvalidHookException;
 use TheGe\PrestaShopModule\DevAid\Hook\HookActionAdminControllerSetMedia;
 use TheGe\PrestaShopModule\DevAid\Utils\CoreUtils;
@@ -120,8 +121,7 @@ class Core extends \Module implements ModuleCore
 
     public function redirectTo(string $routeId): void
     {
-        /** @todo Find $router class */
-        $router = $this->service('router');
+        $router = $this->service('router', Router::class);
 
         if (!$router instanceof Router) {
             throw new \LogicException('Router not available');
@@ -132,8 +132,7 @@ class Core extends \Module implements ModuleCore
 
     public function configuration(): Configuration
     {
-        /** @var Configuration */
-        return $this->service('prestashop.adapter.legacy.configuration');
+        return $this->service('prestashop.adapter.legacy.configuration', Configuration::class);
     }
 
     public function context(): \Context
@@ -147,16 +146,34 @@ class Core extends \Module implements ModuleCore
         return $context;
     }
 
-    /**
-     * @param string        $serviceId Service ID in the Symfony container
-     * @param ?class-string $className Service class constraint
-     */
+    public function db(): Connection
+    {
+        $db = $this->service('doctrine.dbal.default_connection', Connection::class);
+
+        return $db;
+    }
+
     public function service(string $serviceId, ?string $className = null): object
     {
         $service = $this->get($serviceId);
 
-        if ($service === null || ($className !== null && !($service instanceof $className))) {
-            throw new \LogicException("The '{$serviceId}' service is not available.");
+        if ($service === null) {
+            throw new ContainerUnavailableException("Container not available. Attempted to load '{$serviceId}'.");
+        }
+
+        $realClass = $service::class;
+
+        if ($className === null) {
+            if (!str_contains($serviceId, '\\')) {
+                \PrestaShopLogger::addLog(
+                    "Missing class name for this service. ID: {$serviceId}, real class: {$realClass}.",
+                    1,
+                );
+            }
+        } elseif (!($service instanceof $className)) {
+            throw new \LogicException(
+                "Incorrect service class. ID: {$serviceId}, correct class: {$className}, real class: {$realClass}."
+            );
         }
 
         return $service;
