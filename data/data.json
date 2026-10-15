@@ -1,6 +1,6 @@
 [
   {
-    "name": "Module directory name in the modules management list",
+    "id": 1,
     "description": {
       "en": "Add each module directory name next to its displayed name in the Improve > Modules > Manage list.",
       "fr": "Ajoutez le nom du répertoire de chaque module à côté de son nom affiché dans la liste située sous Améliorer > Modules > Gestionnaire.",
