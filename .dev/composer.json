@@ -36,7 +36,11 @@
         "psr-4": {
             "TheGe\\PrestaShopModule\\DevAid\\Tests\\": ".dev/tests/",
             "TheGe\\DevAid\\": ".dev/src/"
-        }
+        },
+        "classmap": [
+            ".dev/bin",
+            ".dev/config"
+        ]
     },
     "require-dev": {
         "nunomaduro/mock-final-classes": "^1.2",
@@ -53,9 +57,9 @@
         "spaze/phpstan-disallowed-calls": "^4.9",
         "squizlabs/php_codesniffer": "^4.0",
         "symfony/yaml": "^8.0",
+        "symplify/config-transformer": "^12.5",
         "the-ge/phpcsfixer-config": "^1.0",
-        "tomasvotruba/type-coverage": "^2.2",
-        "symplify/config-transformer": "^12.5"
+        "tomasvotruba/type-coverage": "^2.2"
     },
     "config": {
         "vendor-dir": ".dev/vendor",
