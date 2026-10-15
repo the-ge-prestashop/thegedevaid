@@ -6,6 +6,7 @@ BINPATH="$( realpath "$( dirname "${BASH_SOURCE[0]}" )" )"
 DEVPATH="$( dirname "$BINPATH" )"
 ROOTPATH="$( dirname "$DEVPATH" )"
 CFGPATH="$DEVPATH/config"
+CACHEPATH="$DEVPATH/var/cache"
 VNDPATH="$DEVPATH/vendor"
 VNDBIN="$VNDPATH/bin"
 set -a
