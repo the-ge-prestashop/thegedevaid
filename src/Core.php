@@ -25,14 +25,14 @@ namespace TheGe\PrestaShopModule\DevAid;
 use PrestaShop\PrestaShop\Adapter\Configuration;
 use PrestaShopBundle\Service\Routing\Router;
 use TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationSpec;
-use TheGe\PrestaShopModule\DevAid\Contract\ModuleCore;
+use TheGe\PrestaShopModule\DevAid\Contract\PrestaShopModule;
 use TheGe\PrestaShopModule\DevAid\Exception\ContainerUnavailableException;
 use TheGe\PrestaShopModule\DevAid\Exception\InvalidHookException;
 use TheGe\PrestaShopModule\DevAid\Hook\HookActionAdminControllerSetMedia;
 use TheGe\PrestaShopModule\DevAid\Utils\CoreUtils;
 
 
-class Core extends \Module implements ModuleCore
+class Core extends \Module implements PrestaShopModule
 {
     use HookActionAdminControllerSetMedia;
 

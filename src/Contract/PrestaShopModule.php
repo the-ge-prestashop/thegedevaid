@@ -3,7 +3,7 @@
 /**
  * @todo Add description
  *
- * File name: ModuleCore.php
+ * File name: PrestaShopModule.php
  * Created:   2026-10-13 12:33:30
  * @author    Gabriel Tenita <g1704578400@tenita.eu>
  * @see       https://github.com/the-ge/
@@ -23,9 +23,9 @@ namespace TheGe\PrestaShopModule\DevAid\Contract;
 use PrestaShop\PrestaShop\Adapter\Configuration;
 
 
-interface ModuleCore
+interface PrestaShopModule
 {
-    /** @return string Must be compatible with ModuleCore::getPathUri() */
+    /** @return string Must be compatible with \ModuleCore::getPathUri() */
     public function getPathUri();
 
     public function get(string $serviceId): ?object;

@@ -21,12 +21,12 @@
 namespace TheGe\PrestaShopModule\DevAid\Utils;
 
 use PrestaShop\PrestaShop\Core\Context\LegacyControllerContext;
-use TheGe\PrestaShopModule\DevAid\Contract\ModuleCore;
+use TheGe\PrestaShopModule\DevAid\Contract\PrestaShopModule;
 
 
 class CoreUtils
 {
-    public function __construct(private readonly ModuleCore $core) {}
+    public function __construct(private readonly PrestaShopModule $core) {}
 
     public function path(): string
     {
