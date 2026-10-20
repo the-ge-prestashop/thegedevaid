@@ -41,7 +41,7 @@ class SQLDataManager implements DataManager
             'id_patch',
             [],
             ['description' => 'text DEFAULT NULL'],
-            ['active'      => 'tinyint(1) unsigned NOT NULL DEFAULT 0'],
+            ['active' => 'tinyint(1) unsigned NOT NULL DEFAULT 0'],
             [
                 '(1)',
                 "(1,1,'Adaugă numele directorului fiecărui modul lângă numele său afișat în lista din secțiunea Îmbunătățește > Module > Administrare module.'), (1,2, 'Add each module directory name next to its displayed name in the Improve > Modules > Manage list.')",

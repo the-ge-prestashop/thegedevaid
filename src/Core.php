@@ -214,7 +214,7 @@ class Core extends \Module implements PrestaShopModule
                     1,
                 );
             }
-        } elseif (!($service instanceof $className)) {
+        } elseif (!$service instanceof $className) {
             throw new \LogicException(
                 "Incorrect service class. ID: {$serviceId}, correct class: {$className}, real class: {$realClass}."
             );
