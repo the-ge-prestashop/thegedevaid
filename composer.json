@@ -30,7 +30,10 @@
         "classmap": [
             "thegedevaid.php"
         ],
-        "exclude-from-classmap": []
+        "exclude-from-classmap": ["/.dev/"]
+    },
+    "archive": {
+        "exclude": ["/.dev"]
     },
     "config": {
         "preferred-install": "dist",
