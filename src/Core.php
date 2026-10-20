@@ -22,14 +22,17 @@
 
 namespace TheGe\PrestaShopModule\DevAid;
 
+use Doctrine\DBAL\Connection;
 use PrestaShop\PrestaShop\Adapter\Configuration;
 use PrestaShopBundle\Service\Routing\Router;
 use TheGe\PrestaShopModule\DevAid\Configuration\ConfigurationSpec;
+use TheGe\PrestaShopModule\DevAid\Contract\DataManager;
 use TheGe\PrestaShopModule\DevAid\Contract\PrestaShopModule;
 use TheGe\PrestaShopModule\DevAid\Exception\ContainerUnavailableException;
 use TheGe\PrestaShopModule\DevAid\Exception\InvalidHookException;
 use TheGe\PrestaShopModule\DevAid\Hook\HookActionAdminControllerSetMedia;
 use TheGe\PrestaShopModule\DevAid\Utils\CoreUtils;
+use TheGe\PrestaShopModule\DevAid\Utils\SQLDataManager;
 
 
 class Core extends \Module implements PrestaShopModule
@@ -47,23 +50,64 @@ class Core extends \Module implements PrestaShopModule
 
     public function install(): bool
     {
+        if (!parent::install()) {
+            return false;
+        }
+
         foreach (ConfigurationSpec::cases() as $spec) {
             $this->configuration()->set($spec->dbKey(), $spec->defaultDbValue());
         }
 
         $hooks = $this->hooksOrThrow();
 
-        return parent::install()
-            && $this->registerHook($hooks);
+        $errors = $this->getDataManager()->initialize();
+        if ($errors !== []) {
+            $this->_errors = array_merge($this->_errors, $errors, $this->getDataManager()->clear());
+
+            return false;
+        }
+
+        return !(!$this->registerHook($hooks))
+        ;
     }
 
     public function uninstall(): bool
     {
+        if (!parent::uninstall()) {
+            return false;
+        }
+
         foreach (ConfigurationSpec::cases() as $spec) {
             $this->configuration()->remove($spec->dbKey());
         }
 
-        return parent::uninstall();
+        $errors = $this->getDataManager()->clear();
+        if ($errors !== []) {
+            $this->_errors = array_merge($this->_errors, $errors);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function getDataManager(): DataManager
+    {
+        try {
+            $manager = $this->get(SQLDataManager::class);
+        } catch (\Throwable) {
+            // Catch exception in case container is not available, or service is not available
+            $manager = null;
+        }
+
+        // During install process the modules's service is not available yet, so we build it manually
+        if (!$manager instanceof SQLDataManager) {
+            /** @var string */
+            $dbPrefix = $this->getContainer()->getParameter('database_prefix');
+            $manager  = new SQLDataManager($this->db(), $dbPrefix);
+        }
+
+        return $manager;
     }
 
     // --- Configuration form

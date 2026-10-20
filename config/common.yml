@@ -1,0 +1,6 @@
+services:
+    TheGe\PrestaShopModule\DevAid\SQLDataManager:
+        public: true
+        arguments:
+            - '@doctrine.dbal.default_connection'
+            - '%database_prefix%'
