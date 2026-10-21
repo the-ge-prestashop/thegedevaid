@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * File name: SQLTableSetDTO.php
+ * File name: SQLTableSet.php
  * Created:   2026-10-18 13:27:37
  * @author    Gabriel Tenita <g1704578400@tenita.eu>
  * @see       https://github.com/the-ge/
@@ -19,7 +19,7 @@
 namespace TheGe\PrestaShopModule\DevAid\Utils;
 
 
-final readonly class SQLTableSetDTO
+final readonly class SQLTableSet
 {
     public ?SQLTableDTO $main;
 

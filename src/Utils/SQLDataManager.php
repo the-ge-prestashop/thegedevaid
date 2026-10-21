@@ -30,13 +30,13 @@ class SQLDataManager implements DataManager
 {
     private string $tableName = 'thegedevaid';
 
-    private SQLTableSetDTO $tableset;
+    private SQLTableSet $tableset;
 
     public function __construct(
         private readonly Connection $connection,
         private readonly string     $dbPrefix,
     ) {
-        $this->tableset = new SQLTableSetDTO(
+        $this->tableset = new SQLTableSet(
             $this->tableName,
             'id_patch',
             [],
