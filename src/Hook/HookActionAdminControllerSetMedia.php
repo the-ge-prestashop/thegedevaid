@@ -37,6 +37,6 @@ trait HookActionAdminControllerSetMedia
      */
     public function hookActionAdminControllerSetMedia(array $params): void
     {
-        $this->utils()->addAdminStylesheet(new StylesheetArgsInAdmin("{$this->utils()->path()}views/css/admin.css"));
+        $this->utils()->addAdminStylesheet(new StylesheetArgsInAdmin("{$this->utils()->path()}views/css/normal-weight-in-header.css"));
     }
 }
